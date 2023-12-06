@@ -169,6 +169,8 @@ const FIXED_DOMAIN_ATTRIBUTE_STATES = {
       "tvshow",
       "url",
       "video",
+      "weather_playlist",
+      "date_playlist",
     ],
     repeat: ["off", "one", "all"],
   },

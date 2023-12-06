@@ -27,6 +27,8 @@ import {
   mdiTelevisionClassic,
   mdiVideo,
   mdiWeb,
+  mdiWeatherCloudy,
+  mdiCalendar,
 } from "@mdi/js";
 import type {
   HassEntityAttributeBase,
@@ -164,6 +166,8 @@ export const MediaClassBrowserSettings: {
   },
   url: { icon: mdiWeb },
   video: { icon: mdiVideo, layout: "grid" },
+  weather_playlist: { icon: mdiWeatherCloudy, layout: "grid" },
+  date_playlist: { icon: mdiCalendar, layout: "grid" },
 };
 
 export interface MediaPickedEvent {
