@@ -18,7 +18,7 @@ import { debounce } from "../../../common/util/debounce";
 import "../../../components/ha-card";
 import "../../../components/ha-svg-icon";
 import { UNAVAILABLE } from "../../../data/entity";
-import { ActionHandlerEvent } from "../../../data/lovelace";
+import { ActionHandlerEvent } from "../../../data/lovelace/action_handler";
 import {
   ForecastEvent,
   WeatherEntity,
@@ -155,7 +155,8 @@ class HuiWeatherForecastCard extends LitElement implements LovelaceCard {
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     return (
       hasConfigOrEntityChanged(this, changedProps) ||
-      changedProps.has("forecastEvent")
+      changedProps.size > 1 ||
+      !changedProps.has("hass")
     );
   }
 
@@ -212,11 +213,9 @@ class HuiWeatherForecastCard extends LitElement implements LovelaceCard {
     if (stateObj.state === UNAVAILABLE) {
       return html`
         <ha-card class="unavailable" @click=${this._handleAction}>
-          ${this.hass.localize(
-            "ui.panel.lovelace.warning.entity_unavailable",
-            "entity",
-            `${computeStateName(stateObj)} (${this._config.entity})`
-          )}
+          ${this.hass.localize("ui.panel.lovelace.warning.entity_unavailable", {
+            entity: `${computeStateName(stateObj)} (${this._config.entity})`,
+          })}
         </ha-card>
       `;
     }
@@ -355,20 +354,20 @@ class HuiWeatherForecastCard extends LitElement implements LovelaceCard {
                                   </div>
                                 `
                               : hourly
-                              ? html`
-                                  ${formatTime(
-                                    new Date(item.datetime),
-                                    this.hass!.locale,
-                                    this.hass!.config
-                                  )}
-                                `
-                              : html`
-                                  ${formatDateWeekdayShort(
-                                    new Date(item.datetime),
-                                    this.hass!.locale,
-                                    this.hass!.config
-                                  )}
-                                `}
+                                ? html`
+                                    ${formatTime(
+                                      new Date(item.datetime),
+                                      this.hass!.locale,
+                                      this.hass!.config
+                                    )}
+                                  `
+                                : html`
+                                    ${formatDateWeekdayShort(
+                                      new Date(item.datetime),
+                                      this.hass!.locale,
+                                      this.hass!.config
+                                    )}
+                                  `}
                           </div>
                           ${this._showValue(item.condition)
                             ? html`
@@ -399,8 +398,8 @@ class HuiWeatherForecastCard extends LitElement implements LovelaceCard {
                                   this.hass!.locale
                                 )}°`
                               : hourly
-                              ? ""
-                              : "—"}
+                                ? ""
+                                : "—"}
                           </div>
                         </div>
                       `
@@ -512,6 +511,7 @@ class HuiWeatherForecastCard extends LitElement implements LovelaceCard {
         .temp-attribute .temp {
           position: relative;
           margin-right: 24px;
+          direction: ltr;
         }
 
         .temp-attribute .temp span {
@@ -547,6 +547,7 @@ class HuiWeatherForecastCard extends LitElement implements LovelaceCard {
 
         .attribute {
           white-space: nowrap;
+          direction: ltr;
         }
 
         .forecast {
@@ -604,6 +605,11 @@ class HuiWeatherForecastCard extends LitElement implements LovelaceCard {
           font-size: 16px;
           padding: 10px 20px;
           text-align: center;
+        }
+
+        /* ============= RTL ============= */
+        :host([rtl]) .temp-attribute {
+          text-align: left;
         }
 
         /* ============= NARROW ============= */

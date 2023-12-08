@@ -52,7 +52,7 @@ import { haStyle } from "../../../../../resources/styles";
 import type { HomeAssistant, Route } from "../../../../../types";
 import "../../../ha-config-section";
 import { showZWaveJSAddNodeDialog } from "./show-dialog-zwave_js-add-node";
-import { showZWaveJSHealNetworkDialog } from "./show-dialog-zwave_js-heal-network";
+import { showZWaveJSRebuildNetworkRoutesDialog } from "./show-dialog-zwave_js-rebuild-network-routes";
 import { showZWaveJSRemoveNodeDialog } from "./show-dialog-zwave_js-remove-node";
 import { configTabs } from "./zwave_js-config-router";
 
@@ -171,7 +171,7 @@ class ZWaveJSConfigDashboard extends SubscribeMixin(LitElement) {
                       <div class="icon">
                         ${this._status === "disconnected"
                           ? html`<ha-circular-progress
-                              active
+                              indeterminate
                             ></ha-circular-progress>`
                           : html`
                               <ha-svg-icon
@@ -430,11 +430,11 @@ class ZWaveJSConfigDashboard extends SubscribeMixin(LitElement) {
                       )}
                     </mwc-button>
                     <mwc-button
-                      @click=${this._healNetworkClicked}
+                      @click=${this._rebuildNetworkRoutesClicked}
                       .disabled=${this._status === "disconnected"}
                     >
                       ${this.hass.localize(
-                        "ui.panel.config.zwave_js.common.heal_network"
+                        "ui.panel.config.zwave_js.common.rebuild_network_routes"
                       )}
                     </mwc-button>
                     <mwc-button @click=${this._openOptionFlow}>
@@ -457,7 +457,7 @@ class ZWaveJSConfigDashboard extends SubscribeMixin(LitElement) {
                       : html`
                           <ha-circular-progress
                             size="small"
-                            active
+                            indeterminate
                           ></ha-circular-progress>
                         `}
                   </div>
@@ -612,8 +612,8 @@ class ZWaveJSConfigDashboard extends SubscribeMixin(LitElement) {
     });
   }
 
-  private async _healNetworkClicked() {
-    showZWaveJSHealNetworkDialog(this, {
+  private async _rebuildNetworkRoutesClicked() {
+    showZWaveJSRebuildNetworkRoutesDialog(this, {
       entry_id: this.configEntryId!,
     });
   }
